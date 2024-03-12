@@ -22,7 +22,9 @@ class UpstashVectorStore:
         for document in documents:
             text = document.page_content
             metadata = document.metadata
-            metadata = {"context": metadata,**metadata}
+            # metadata = {"context": text,**metadata}
+            metadata = {**metadata,"context":text}
+
             texts.append(text)
             metadatas.append(metadata)
 
@@ -44,7 +46,7 @@ class UpstashVectorStore:
         # print(self.index.stats())
         return all_ids
     
-    def similarity_search_with_score(self,query,k = 4):
+    def similarity_search_with_score(self, query, k=4):
         query_embedding = self.embeddings.embed_query(query)
         query_results = self.index.query(
             query_embedding,
@@ -55,7 +57,16 @@ class UpstashVectorStore:
         for query_result in query_results:
             score = query_result.score
             metadata = query_result.metadata
-            context = metadata.pop("context")
+            print(f"Retrieved Metadata: {metadata}")  # Print complete metadata
+            context = metadata.get("context")
+            if context:
+                print(f"Context as String: {context}")  # Print context only if it exists
+
+            # Ensure context is a string before creating Document
+            if not isinstance(context, str):
+                print(f"Warning: Unexpected context type: {type(context)}")
+                continue  # Skip this document if context has an unexpected type
+
             doc = Document(
                 page_content=context,
                 metadata=metadata,

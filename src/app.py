@@ -25,8 +25,8 @@ def load_rag(_chat_box):
 
 def display_source_documents(source_documents):
     for document,score in source_documents:
-        metadata = document['metadata']
-        page_content = document['page_content']
+        metadata = document.metadata
+        page_content = document.page_content
 
         id = metadata['id']
         title = metadata['title']
@@ -42,7 +42,7 @@ def display_source_documents(source_documents):
             st.markdown(f"authors: {','.join(authors)}")
             st.markdown(f"Publication date: {published}")
             st.markdown(f"URL: {url_pdf}")
-            st.write("Context: {document_content}")
+            st.write(f"Context: {page_content}")
 
 
 input_question = st.text_input("Ask your question here...")
@@ -53,7 +53,7 @@ with columns[0]:
 
 rag = load_rag(chat_box)
 
-if(input_question.strip != ""):
+if(input_question != ""):
     with st.spinner("Generating answer.."):
         prediction = rag.predict(input_question)
     
