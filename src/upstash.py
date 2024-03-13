@@ -8,7 +8,7 @@ class UpstashVectorStore:
         self.index = index
         self.embeddings = embeddings
 
-    def delete_vectors(self,ids,delete_all):
+    def delete_vectors(self,delete_all,ids = None):
         if(delete_all):
             self.index.reset()
         else:
@@ -18,7 +18,7 @@ class UpstashVectorStore:
         texts = []
         all_ids = []
         metadatas = []
-
+        print("\n\n\n\n",len(documents),"\n\n\n\n")
         for document in documents:
             text = document.page_content
             metadata = document.metadata
@@ -59,14 +59,14 @@ class UpstashVectorStore:
             metadata = query_result.metadata
             print(f"Retrieved Metadata: {metadata}")  # Print complete metadata
             context = metadata.get("context")
-            if context:
-                print(f"Context as String: {context}")  # Print context only if it exists
+            # if context:
+            #     print(f"Context as String: {context}")  # Print context only if it exists
 
             # Ensure context is a string before creating Document
             if not isinstance(context, str):
-                print(f"Warning: Unexpected context type: {type(context)}")
+                print("Unexpected context type")
                 continue  # Skip this document if context has an unexpected type
-
+            print("correct")
             doc = Document(
                 page_content=context,
                 metadata=metadata,

@@ -49,9 +49,11 @@ class RAG:
         context, source_documents = self.get_context(query)
         print(context,source_documents)
         prompt = self.get_prompt(query, context)
+        print(context)
         answer = self.llm.predict(prompt)
         prediction = {
             "answer": answer,
             "source_documents": source_documents,
         }
+        self.vectorstore.delete_vectors(True)
         return prediction

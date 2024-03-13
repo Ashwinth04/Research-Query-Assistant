@@ -16,7 +16,7 @@ def return_documents_list(query,batch_size,limit):
     load_dotenv()
     # click.echo("Extracting papers matching this query: {query}")
     papers = extract_papers(query)
-    # click.echo("Extraction complete.",len(papers))
+    print("Extraction complete.",len(papers))
     documents = [
         Document(
             page_content = paper['abstract'],
@@ -30,6 +30,7 @@ def return_documents_list(query,batch_size,limit):
             },
         )
         for paper in papers
+        if paper.get("abstract") is not None 
     ]
 
     text_splitter = RecursiveCharacterTextSplitter(
